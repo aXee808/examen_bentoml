@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import joblib
+import bentoml
 from sklearn.linear_model import ElasticNetCV
 from sklearn.model_selection import RepeatedKFold
 from pathlib import Path
@@ -24,7 +25,8 @@ def main(repo_path):
 
     # save model
     joblib.dump(model, f"{repo_path}/models/elasticnet_model.pkl")
-    print("Model trained and saved successfully.")
+    model_ref = bentoml.sklearn.save_model("admission_elasticnet", model)
+    print(f"Model trained and saved successfully on bentoml : {model_ref}")
     
 if __name__ == "__main__":
     repo_path = Path(__file__).parent.parent
