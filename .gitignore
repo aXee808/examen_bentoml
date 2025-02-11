@@ -7,3 +7,4 @@
 /data/processed/X_test.csv
 /data/processed/y_train.csv
 /data/processed/y_test.csv
+*.egg-info/
