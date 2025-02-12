@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
-import joblib
 import bentoml
 from sklearn.linear_model import ElasticNetCV
 from sklearn.model_selection import RepeatedKFold
+from sklearn.metrics import mean_squared_error,r2_score
 from pathlib import Path
 
 def main(repo_path):
-    # Load features and target data
+    # Load train datasets
     X_train_scaled = pd.read_csv("./data/processed/X_train_scaled.csv",sep=',')
     y_train = pd.read_csv("./data/processed/y_train.csv",sep=',')
     y_train = np.ravel(y_train)
@@ -23,8 +23,18 @@ def main(repo_path):
     # fit model
     model.fit(X_train_scaled,y_train)
 
+    # load test datasets
+    X_test_scaled = pd.read_csv(f"{repo_path}/data/processed/X_test_scaled.csv")
+    y_test = pd.read_csv(f"{repo_path}/data/processed/y_test.csv")
+    y_test = np.ravel(y_test)
+
+    # evaluate model
+    predictions = model.predict(X_test_scaled)
+    mse = mean_squared_error(y_test, predictions)
+    r2score = r2_score(y_test, predictions)
+    print(f"Evaluation du modèle : MSE = {mse} / R2 Score = {r2score}")
+
     # save model
-    joblib.dump(model, f"{repo_path}/models/elasticnet_model.pkl")
     model_ref = bentoml.sklearn.save_model("admission_elasticnet", model)
     print(f"Model trained and saved successfully on bentoml : {model_ref}")
     
