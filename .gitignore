@@ -12,3 +12,4 @@
 /models/elasticnet_model.pkl
 *.egg-info/
 /src/__pycache__
+.pytest_cache
